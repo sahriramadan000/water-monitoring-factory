@@ -1,0 +1,410 @@
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #E7ECEF;
+    --text-color: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --footer-background-color: #ffffff;
+    --footer-active-background-color: var(--primary-color);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    padding-bottom: 100px; /* Space for the footer */
+    background-color: #E7ECEF !important;
+    color: #516F91 !important;
+    font-family: 'Lato', sans-serif;
+}
+
+header {
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.time-date {
+    font-size: 1rem;
+}
+
+.user-profile img {
+    width: 40px;
+    height: 40px;
+}
+
+.card-text {
+    font-size: 40px;
+}
+
+.weather-card,
+.notifications-card,
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.weather-info {
+    display: flex;
+    align-items: center;
+}
+
+.temp {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.temp-range,
+.weather-status {
+    font-size: 1rem;
+}
+
+.weather-status {
+    color: var(--secondary-color);
+}
+
+.weather-icon img {
+    height: 100px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to control the gap between the footer and the bottom of the page */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%; /* Adjust width as necessary */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 30px; /* Rounded corners */
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 10px;
+    z-index: 1000;
+}
+
+.footer-link {
+    padding: 10px;
+    font-size: 1rem;
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.footer-link.active {
+    background-color: #007bff;
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+.footer-link i {
+    font-size: 1.5rem;
+}
+
+.footer-link:hover {
+    text-decoration: none;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.status-badge {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0;
+}
+
+.status-on {
+    background-color: green;
+}
+
+.status-off {
+    background-color: red;
+}
+
+.network-diagram {
+    position: relative;
+}
+
+.status-container {
+    position: absolute;
+    top: 48.5%;
+    left: 50.5%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: space-between;
+    width: 15%;
+    max-width: 400px;
+}
+
+.status-left, .status-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 285px;
+}
+
+/* Card Company */
+.status-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: 15px;
+    left: 20px;
+}
+
+/* Green color for 'active' status */
+.factory-active .status-indicator {
+    background-color: green;
+}
+
+/* Red color for 'inactive' status */
+.factory-inactive .status-indicator {
+    background-color: red;
+}
+
+.refresh-icon {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+
+.company-card {
+    position: relative;
+}
+
+/* Card Weather */
+.weather-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+    background-color: #ffffff;
+}
+
+.weather-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.weather-title {
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.temp {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.temp-range {
+    font-size: 1rem;
+}
+
+.weather-status {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.weather-icon img {
+    height: 6rem;
+}
+
+.weather-arrow {
+    font-size: 1.5rem;
+    color: #6c757d;
+}
+
+.weather-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Card Factory List */
+.list-group-item {
+    padding-left: 25px;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    position: relative;
+}
+.list-group-item::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Background color for active (green) and inactive (brown) statuses */
+.list-group-item.site-active::before {
+    background-color: green;
+}
+
+.list-group-item.site-inactive::before {
+    background-color: red;
+}
+.badge-success { background-color: #28a745; }
+.badge-secondary { background-color: #6c757d; }
+
+
+.btn-daily {
+    border-radius: 20px 0 0 20px !important;
+}
+
+.btn-weekly {
+    border-radius: 0 20px 20px 0 !important;
+}
+
+.btn-check:active+.btn-outline-water, .btn-check:checked+.btn-outline-water, .btn-outline-water.active, .btn-outline-water.dropdown-toggle.show, .btn-outline-water:active {
+    background-color: #235B9D !important;
+    color: white;
+    border: 1px solid #235B9D;
+}
+.btn-check:active+.btn-outline-water, .btn-check:checked+.btn-outline-water, .btn-outline-water.active, .btn-outline-water.dropdown-toggle.show, .btn-outline-water {
+    border: 1px solid #235B9D;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.tab-menu {
+    display: flex;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.tab {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: #e2e8f0;
+    text-align: center;
+    border-radius: 5px;
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.tab.active {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+.tab:last-child {
+    margin-right: 0;
+}
+
+.chart {
+    height: 4rem;
+    position: relative;
+}
+
+/* ============================================================================== */
+/* PAGE REPORT */
+/* ============================================================================== */
+.chart-report {
+    height: 5rem;
+    position: relative;
+}
+
+.table.dataTable {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: white;
+    overflow: hidden;
+    border: none;
+}
+
+.table.dataTable thead {
+    background-color: #e2e8f0;
+}
+
+.table.dataTable thead th {
+    font-weight: bold;
+    color: #1e3a8a;
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table.dataTable tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table.dataTable tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table.dataTable tbody td {
+    padding: 10px;
+    text-align: center;
+    color: #333;
+    border-left: none; /* Remove left border */
+    border-right: none; /* Remove right border */
+}
+
+.table.dataTable tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.table.dataTable tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9fafb; /* Light gray color for odd rows */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f5f9; /* Light blue color for hover */
+}
+
+.table-bordered td, .table-bordered th {
+    border: 1px solid #dee2e6;
+}
+
+table {
+    border-top: 1px solid #d6d6d6 !important;
+    border-bottom: 1px solid #d6d6d6 !important;
+}
+
+.dataTables_length {
+    padding: 15px;
+}
+
+.dataTables_filter{
+    padding: 15px;
+}
+.dataTables_info {
+    padding: 15px;
+}
+
+.dataTables_paginate {
+    padding: 15px;
+}

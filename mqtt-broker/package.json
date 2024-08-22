@@ -1,0 +1,22 @@
+{
+  "name": "mqtt-broker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mosca": "^2.8.3",
+    "mqtt": "^4.3.7",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
+    "websocket": "^1.0.34",
+    "ws": "^8.13.0"
+  }
+}
