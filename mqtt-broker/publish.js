@@ -1,8 +1,8 @@
 // MQTT PUBLISH
 
 let mqtt = require('mqtt')
-// let client = mqtt.connect('mqtt://91.121.93.94:1883')
-let client = mqtt.connect('mqtt://localhost:1884')
+let client = mqtt.connect('mqtt://91.121.93.94:1883')
+// let client = mqtt.connect('mqtt://localhost:1884')
 
 let topik = 'logger/site_1';
 let topik2 = 'logger/site_2';
@@ -19,7 +19,7 @@ function getRandomInt(min, max) {
 client.on('connect', () => {
     setInterval(()=> {
         let message = {
-            factory_code: 2334234,
+            factory_code: 'SPP01',
             site_code: 'SS1',
             data: {
                 ph: getRandomFloat(6.5, 8.5),
@@ -29,7 +29,7 @@ client.on('connect', () => {
             }
         };
         let message2 = {
-            factory_code: 2334234,
+            factory_code: 'SPP01',
             site_code: 'SS2',
             data: {
                 ph: getRandomFloat(6.5, 8.5),
@@ -42,7 +42,7 @@ client.on('connect', () => {
         let jsonMessage = JSON.stringify(message);
         let jsonMessage2 = JSON.stringify(message2);
         client.publish(topik, jsonMessage);
-        client.publish(topik2, jsonMessage2);
+        // client.publish(topik2, jsonMessage2);
 
         console.log("Pesan Published! ", message);
     } ,3000)

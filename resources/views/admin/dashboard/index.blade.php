@@ -78,7 +78,7 @@
                         </a>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset('assets/img/image2.png') }}" alt="Company Logo" class="company-logo mt-3">
+                        <img src="{{ asset('assets/img/image2.png') }}" alt="Company Logo" width="88" class="company-logo mt-3">
                         <h5 class="card-title mt-3">{{ $currentSite->site_name }}</h5>
                     </div>
                 </div>
