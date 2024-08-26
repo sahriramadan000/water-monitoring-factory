@@ -35,6 +35,7 @@
                     <thead>
                         <tr>
                             <th>Site Code</th>
+                            <th>Topic</th>
                             <th>Site Name</th>
                             <th>Location</th>
                             <th>Status</th>
@@ -45,6 +46,7 @@
                         @foreach($factory->sites as $site)
                         <tr>
                             <td>{{ $site->site_code }}</td>
+                            <td>{{ $site->topic }}</td>
                             <td>{{ $site->site_name }}</td>
                             <td>{{ $site->site_location }}</td>
                             <td>

@@ -34,7 +34,7 @@ io.on("connection", function (socket) {
     console.log('Client Connected : '+socket.id);
 
     socket.on('realtimeMonitor', function(msg){
-        console.log('SOCKET==> ',msg);
+        // console.log('SOCKET==> ',msg);
 
         io.to("all").emit('realtimeMonitor', msg);
     });

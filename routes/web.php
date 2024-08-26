@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FactoryController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SensorController;
 use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\UserController;
@@ -26,9 +27,7 @@ Route::get('/', function () {
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
-Route::get('/report', function() {
-    return view('admin.report.index');
-})->name('report');
+Route::get('/report',[ReportController::class, 'index'])->name('report');
 
 // Factories Controller
 Route::resource('factories', FactoryController::class);

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Site extends Model
 {
     use HasFactory;
-    protected $fillable = ['factory_id', 'site_code', 'site_name', 'site_location', 'status'];
+    protected $fillable = ['factory_id', 'site_code', 'topic', 'site_name', 'site_location', 'status'];
 
     public function factory()
     {

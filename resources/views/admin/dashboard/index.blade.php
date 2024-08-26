@@ -37,16 +37,16 @@
 <div class="row">
     <div class="col-12 col-md-6">
         <div class="card mb-4">
-            <div class="card-body network-diagram">
-                <img src="{{ asset('assets/img/image.png') }}" alt="Network Diagram" class="img-fluid d-block mx-auto">
+            <div class="card-body network-diagram p-5">
+                <img src="{{ asset('assets/img/image.png') }}" width="550" alt="Network Diagram" class="img-fluid d-block mx-auto">
                 <div class="status-container">
                     <div class="status-left">
-                        <span class="status-badge status-on"></span>
-                        <span class="status-badge status-off"></span>
+                        <span class="status-badge status-off" id="status-SS1"></span>
+                        <span class="status-badge status-off" id="status-SS3"></span>
                     </div>
                     <div class="status-right">
-                        <span class="status-badge status-on"></span>
-                        <span class="status-badge status-off"></span>
+                        <span class="status-badge status-off" id="status-SS2"></span>
+                        <span class="status-badge status-off" id="status-SS4"></span>
                     </div>
                 </div>
             </div>
@@ -56,24 +56,24 @@
         <div class="row">
             <div class="col-12 col-md-6">
                 <div class="card mb-4 company-card {{ $currentFactory->status == true ? 'factory-active' : 'factory-inactive' }}">
-                    <div class="status-indicator"></div>
+                    {{-- <div class="status-indicator"></div> --}}
                     <div class="refresh-icon">
                         <a href="#!">
-                            <i class="bi bi-arrow-clockwise" style="font-size: 1.5rem;" data-factory-id="{{ $nextFactory->id }}"></i>
+                            <i class="bi bi-arrows" style="font-size: 1.5rem;" data-factory-id="{{ $nextFactory->id }}"></i>
                         </a>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset('assets/img/image2.png') }}" alt="Company Logo" class="company-logo mt-3">
+                        <img src="{{ asset('assets/img/logo-syslab.png') }}" alt="Company Logo" width="210" class="company-logo mt-3 pt-4">
                         <h5 class="card-title mt-3">{{ $currentFactory->factory_name }}</h5>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6">
                 <div class="card mb-4 company-card {{ $currentSite->status == true ? 'factory-active' : 'factory-inactive' }}">
-                    <div class="status-indicator"></div>
+                    {{-- <div class="status-indicator"></div> --}}
                     <div class="refresh-icon">
                         <a href="#!">
-                            <i class="bi bi-arrow-clockwise" style="font-size: 1.5rem;"
+                            <i class="bi bi-arrows" style="font-size: 1.5rem;"
                                data-site-id="{{ $nextSite->id }}"></i>
                         </a>
                     </div>
@@ -367,35 +367,76 @@
         }).format(value);
     }
 
-    socket.on('realtimeMonitor', function (data) {
+    let siteCodesFromDb = @json($getSiteCode);
+let sensorIdentFromDb = @json($getSensorIdent);
+let noDataTimeout;
 
-        // Ensure the data corresponds to the correct factory and site
-        console.log('Data:', data);
-        if (data.factory_code && data.site_code) {
+// Function to mark all sites as off
+function markAllSitesOff() {
+    siteCodesFromDb.forEach(function(siteCode) {
+        let elementStatusId = `status-${siteCode}`;
+        $('#' + elementStatusId).removeClass('status-on').addClass('status-off');
 
-            // Iterate over each sensor data
-            Object.keys(data.data).forEach(function(sensor) {
-                // Construct the element ID based on site_code and sensor identifier
-                let elementId = `value-${data.site_code}-${sensor}`;
+        sensorIdentFromDb.forEach(sensorIdent => {
+            let elementId = `value-${siteCode}-${sensorIdent}`;
+            let element = document.getElementById(elementId);
 
-                // Check if the element exists in the DOM
-                let element = document.getElementById(elementId);
-                if (element) {
-                    let sensorValue = data.data[sensor];
-
-                    // Check if the sensor unit is Rupiah ('Rp')
-                    if (element.closest('.card-text').innerText.includes('Rp')) {
-                        // Update the element text with the formatted Rupiah value
-                        element.innerText = formatRupiah(sensorValue);
-                    } else {
-                        // Update the element text with the raw sensor value
-                        element.innerText = sensorValue;
-                    }
-                }
-            });
-        }
-
+            if (element) {
+                element.innerText = '-';
+            }
+        });
     });
+}
+
+// Function to handle received data
+function handleRealtimeData(data) {
+    console.log('Data:', data);
+
+    if (data.factory_code && data.site_code) {
+        // Iterate over each sensor data
+        Object.keys(data.data).forEach(function(sensor) {
+            // Construct the element ID based on site_code and sensor identifier
+            let elementId = `value-${data.site_code}-${sensor}`;
+            let elementStatusId = `status-${data.site_code}`;
+
+            // Check if the element exists in the DOM
+            let element = document.getElementById(elementId);
+            if (element) {
+                let sensorValue = data.data[sensor];
+
+                // Check if the sensor unit is Rupiah ('Rp')
+                if (element.closest('.card-text').innerText.includes('Rp')) {
+                    // Update the element text with the formatted Rupiah value
+                    element.innerText = formatRupiah(sensorValue);
+                } else {
+                    // Update the element text with the raw sensor value
+                    element.innerText = sensorValue;
+                }
+            }
+
+            if (siteCodesFromDb.includes(data.site_code)) {
+                $('#' + elementStatusId).removeClass('status-off').addClass('status-on');
+            }
+        });
+    }
+}
+
+// Listen for the realtimeMonitor socket event
+socket.on('realtimeMonitor', function(data) {
+    // Clear the previous timeout as new data is received
+    clearTimeout(noDataTimeout);
+
+    // Handle the incoming data
+    handleRealtimeData(data);
+
+    // Reset the timeout to mark all sites as off if no new data is received within the interval
+    noDataTimeout = setTimeout(function() {
+        markAllSitesOff();
+    }, 3000); // Adjust the interval as needed
+});
+
+// Initial call to mark all sites off if no data is received immediately after connection
+markAllSitesOff();
 
 </script>
 @endpush

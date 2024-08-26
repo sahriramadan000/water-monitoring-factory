@@ -13,6 +13,10 @@
 
                     <input type="hidden" class="form-control" id="factory_id" name="factory_id" value="{{ $idFactory }}" required>
                     <div class="mb-3">
+                        <label for="topic" class="form-label">Topic</label>
+                        <input type="text" class="form-control" id="topic" name="topic" value="{{ $site->topic }}" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="site_code" class="form-label">Site Code</label>
                         <input type="text" class="form-control" id="site_code" name="site_code" value="{{ $site->site_code }}" required>
                     </div>
