@@ -1,6 +1,6 @@
 let mqtt = require('mqtt');
 let { Pool } = require('pg');
-let moment = require('moment');
+let moment = require('moment-timezone');
 const io = require('socket.io-client');
 const socket = io('http://localhost:2222');
 const schedule = require('node-schedule');
@@ -19,9 +19,11 @@ let topicData = {};
 
 // Function to save data to the database
 function saveToDatabase(siteCode, factoryCode, data) {
+    const jakartaTime = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
+
     const query = `
         INSERT INTO sensor_histories (site_code, factory_code, ph, flow, total_debit, total_credit, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $7)
     `;
 
     const values = [
@@ -30,7 +32,8 @@ function saveToDatabase(siteCode, factoryCode, data) {
         data.ph ?? -1,
         data.flow ?? -1,
         data.total_debit ?? -1,
-        data.total_credit ?? -1
+        data.total_credit ?? -1,
+        jakartaTime,
     ];
 
     pool.query(query, values, (err, res) => {
