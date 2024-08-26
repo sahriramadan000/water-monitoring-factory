@@ -5,7 +5,7 @@
     <div class="col-12 col-md-9 d-flex flex-fill">
         <div class="card mb-3 flex-fill">
             <div class="card-body d-flex align-items-center">
-                <img src="{{ asset('assets/img/image2.png') }}" alt="Logo" class="mr-3" style="height: 40px;">
+                <img src="{{ asset('assets/img/image2.png') }}" alt="Logo" class="me-3" style="height: 80px;">
                 <form action="{{ route('report') }}" method="GET" class="w-100 d-flex gap-3">
                     <div class="form-group flex-grow-1 mr-2">
                         <label for="site_code">Select Site:</label>
