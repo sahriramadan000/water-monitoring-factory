@@ -88,12 +88,12 @@ function startSubscriber() {
                     topicData[jsonData.site_code] = {
                         site_code: jsonData.site_code,
                         factory_code: jsonData.factory_code,
-                        data: jsonData,  // Store the data immediately
+                        data: jsonData.data,  // Store the data immediately
                         dataChanged: true, // Mark new data as changed
                     };
                 } else {
                     // Update existing data and mark as changed
-                    topicData[jsonData.site_code].data = jsonData;
+                    topicData[jsonData.site_code].data = jsonData.data;
                     topicData[jsonData.site_code].dataChanged = true;
                 }
 
