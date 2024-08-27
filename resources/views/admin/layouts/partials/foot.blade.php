@@ -10,10 +10,46 @@
 <script src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
 <script src="{{ asset('assets/js/socket.io.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-confirm@3.3.4/js/jquery-confirm.min.js"></script>
 @stack('js-src')
 
 <script>
     let socket = window.socketio;
     socket = io('http://localhost:2222', {transports: ["websocket"]});
+
+    function restarGateway() {
+        $.confirm({
+            icon: 'bx bx-sync',
+            title: 'Restart Gateway',
+            theme: 'supervan',
+            content: 'Are you sure?',
+            autoClose: 'cancel|8000',
+            buttons: {
+                yes: {
+                    text: 'yes',
+                    action: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'http://localhost:2222/restart-gateway',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                data: 'restart'
+                            },
+                            success: function (data) {
+                            },
+                            error: function (data) {
+                            }
+                        });
+                    }
+                },
+                cancel: function () {
+
+                }
+            }
+        });
+    }
 </script>
 @stack('js')

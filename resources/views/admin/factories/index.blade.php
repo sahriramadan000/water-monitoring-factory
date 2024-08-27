@@ -2,7 +2,14 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12 col-md-10">
+    <div class="col-12 col-md-2">
+        <div class="card mb-3 flex-fill">
+            <a href="#!" type="button" onclick="restarGateway()" class="card-body d-flex align-items-center justify-content-center" style="color:#516F91; text-decoration: none;">
+                <h5 class="mb-0 fw-bolder">Restart Gateway</h5>
+            </a>
+        </div>
+    </div>
+    <div class="col-12 col-md-8">
         {{-- <div class="card mb-3 flex-fill">
             <div class="card-body d-flex align-items-center justify-content-start" style="color:#516F91; text-decoration: none;">
                 <h5 class="mb-0 fw-bolder">Factory List</h5>
