@@ -2,19 +2,19 @@ let mqtt = require('mqtt');
 let { Pool } = require('pg');
 let moment = require('moment-timezone');
 const io = require('socket.io-client');
-const socket = io('http://localhost:2222');
+const socket = io(process.env.SOCKET_URL);
 const schedule = require('node-schedule');
 
 // PostgreSQL connection setup
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'water-monitoring-factory',
-    password: 'root',
-    port: 5432,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_DATABASE,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
 });
 
-// Store data and last save times for each topic
+// Store data and last save times for each site
 let topicData = {};
 
 // Function to save data to the database
@@ -42,6 +42,11 @@ function saveToDatabase(siteCode, factoryCode, data) {
             return;
         }
         console.log(`Data saved successfully for site ${siteCode}:`, data);
+
+        // Mark the data as saved
+        if (topicData[siteCode]) {
+            topicData[siteCode].dataChanged = false;
+        }
     });
 }
 
@@ -49,13 +54,13 @@ function saveToDatabase(siteCode, factoryCode, data) {
 function checkAndSaveData() {
     console.log('Current topicData:', topicData);
 
-    for (const [topic, message] of Object.entries(topicData)) {
-        const { site_code, factory_code, data } = message;
+    for (const [siteCode, message] of Object.entries(topicData)) {
+        const { site_code, factory_code, data, dataChanged } = message;
 
-        if (site_code && factory_code && data) {
+        if (site_code && factory_code && dataChanged) {
             saveToDatabase(site_code, factory_code, data);
         } else {
-            console.error(`Missing data for topic: ${topic}`);
+            console.error(`No new data for site: ${siteCode}`);
         }
     }
 }
@@ -67,7 +72,7 @@ schedule.scheduleJob('* * * * *', () => {
 });
 
 function startSubscriber() {
-    let client = mqtt.connect('mqtt://localhost:1884');
+    let client = mqtt.connect(process.env.MQTT_BROKER);
 
     client.on('message', (topic, message) => {
         message = message.toString();
@@ -77,9 +82,20 @@ function startSubscriber() {
         try {
             let jsonData = JSON.parse(message);
 
-            // Update topicData
+            // Ensure topicData[site_code] exists before updating
             if (jsonData.site_code) {
-                topicData[topic] = jsonData;
+                if (!topicData[jsonData.site_code]) {
+                    topicData[jsonData.site_code] = {
+                        site_code: jsonData.site_code,
+                        factory_code: jsonData.factory_code,
+                        data: jsonData,  // Store the data immediately
+                        dataChanged: true, // Mark new data as changed
+                    };
+                } else {
+                    // Update existing data and mark as changed
+                    topicData[jsonData.site_code].data = jsonData;
+                    topicData[jsonData.site_code].dataChanged = true;
+                }
 
                 // Emit the data via Socket.io
                 socket.emit('realtimeMonitor', jsonData);
@@ -106,8 +122,14 @@ function startSubscriber() {
             res.rows.forEach(row => {
                 client.subscribe(row.topic);
                 console.log('Subscribed to topic:', row.topic);
-                // Initialize topicData
-                topicData[row.topic] = { site_code: row.site_code, factory_code: row.factory_code, data: {} };
+
+                // Initialize topicData with default values
+                topicData[row.site_code] = {
+                    site_code: row.site_code,
+                    factory_code: row.factory_code,
+                    data: {},
+                    dataChanged: false, // Initially mark data as not changed
+                };
             });
         });
 
