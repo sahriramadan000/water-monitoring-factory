@@ -1,8 +1,8 @@
 // MQTT PUBLISH
 
 let mqtt = require('mqtt')
-// let client = mqtt.connect('mqtt://91.121.93.94:1883')
-let client = mqtt.connect('mqtt://localhost:1884')
+let client = mqtt.connect('mqtt://91.121.93.94:1883')
+// let client = mqtt.connect('mqtt://localhost:1884')
 
 let topik = 'logger/site_1';
 let topik2 = 'logger/site_2';
@@ -41,7 +41,7 @@ client.on('connect', () => {
 
         let jsonMessage = JSON.stringify(message);
         let jsonMessage2 = JSON.stringify(message2);
-        // client.publish(topik, jsonMessage);
+        client.publish(topik, jsonMessage);
         client.publish(topik2, jsonMessage2);
 
         console.log("Pesan Published! ", message);

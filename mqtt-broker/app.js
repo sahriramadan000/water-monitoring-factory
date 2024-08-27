@@ -13,9 +13,12 @@ const { startSubscriber } = require('./src/subscribe/subscribe');
 
 app.all('*', function(req, res, next) {
     let origin = req.headers.origin;
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Origin", origin); // Allow the specific origin
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-csrf-token");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     next();
 });
+
 
 // Route Trial
 app.get('/', (req, res) => {
