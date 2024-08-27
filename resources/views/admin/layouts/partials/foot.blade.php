@@ -30,7 +30,7 @@
                     action: function () {
                         $.ajax({
                             type: 'POST',
-                            url: 'http://localhost:2222/restart-gateway',
+                            url: 'https://mqtt-watermonitoring.versamorph.pro/restart-gateway',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },

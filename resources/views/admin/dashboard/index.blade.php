@@ -157,47 +157,69 @@
             <div class="col-12 col-md-6">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card mb-3">
+                        <div class="card mb-3" id="flow-chart">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center px-2">
                                     <div class="weather-arrow">
                                         <i class="bi bi-arrow-left"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold mb-0">Flow Velocity</h5>
+                                    <h5 class="card-title fw-bold mb-0">Flow Meter</h5>
                                     <div class="weather-arrow">
                                         <i class="bi bi-arrow-right"></i>
                                     </div>
                                 </div>
-                                <div class="tab-menu">
-                                    <button class="tab active flowVelocityTab" data-period="daily" onclick="showChart('flowVelocity', 'daily')">Daily</button>
-                                    <button class="tab flowVelocityTab" data-period="weekly" onclick="showChart('flowVelocity', 'weekly')">Weekly</button>
+                                <div class="chart">
+                                    <canvas id="flowMeterDaily"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-3 d-none" id="total-debit-chart">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center px-2">
+                                    <div class="weather-arrow">
+                                        <i class="bi bi-arrow-left"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold mb-0">Total Debit</h5>
+                                    <div class="weather-arrow">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
                                 </div>
                                 <div class="chart">
-                                    <canvas id="flowVelocityDaily"></canvas>
-                                    <canvas id="flowVelocityWeekly" style="display: none;"></canvas>
+                                    <canvas id="totalDebit"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="card">
+                        <div class="card" id="ph-chart">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center px-2">
-                                    <div class="weather-arrow">
+                                    <div class="weather-arrow2">
                                         <i class="bi bi-arrow-left"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold mb-0">Debit Volume</h5>
-                                    <div class="weather-arrow">
+                                    <h5 class="card-title fw-bold mb-0">Ph</h5>
+                                    <div class="weather-arrow2">
                                         <i class="bi bi-arrow-right"></i>
                                     </div>
                                 </div>
-                                <div class="tab-menu">
-                                    <button class="tab active debitVolumeTab" data-period="daily" onclick="showChart('debitVolume', 'daily')">Daily</button>
-                                    <button class="tab debitVolumeTab" data-period="weekly" onclick="showChart('debitVolume', 'weekly')">Weekly</button>
+                                <div class="chart">
+                                    <canvas id="phDaily"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card d-none" id="total-credit-chart">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center px-2">
+                                    <div class="weather-arrow2">
+                                        <i class="bi bi-arrow-left"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold mb-0">Total Credit</h5>
+                                    <div class="weather-arrow2">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
                                 </div>
                                 <div class="chart">
-                                    <canvas id="debitVolumeDaily"></canvas>
-                                    <canvas id="debitVolumeWeekly" style="display: none;"></canvas>
+                                    <canvas id="totalCredit"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -214,9 +236,6 @@
                 <div class="card-body text-center">
                     <div class="d-flex justify-content-between align-items-center px-2">
                         <h5 class="card-title fw-bold mb-0">{{ $sensor->sensor_name }}</h5>
-                        <div class="weather-arrow">
-                            <i class="bi bi-arrow-right"></i>
-                        </div>
                     </div>
                     <div class="d-flex justify-content-center align-items-center py-4">
                         @if($sensor->sensor_unit == 'Rp')
@@ -229,79 +248,186 @@
             </div>
         </div>
     @endforeach
-
-    {{-- <div class="col-12 col-md-3">
-        <div class="card mb-3">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center px-2">
-                    <h5 class="card-title fw-bold mb-0">Flow Velocity</h5>
-                    <div class="weather-arrow">
-                        <i class="bi bi-arrow-right"></i>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center align-items-center py-4">
-                    <img src="{{ asset('assets/img/vector.png') }}" alt="" class="img-fluid me-3">
-                    <p class="card-text">3.62 m/s</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-3">
-        <div class="card mb-3">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center px-2">
-                    <h5 class="card-title fw-bold mb-0">Debit Volume</h5>
-                    <div class="weather-arrow">
-                        <i class="bi bi-arrow-right"></i>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center align-items-center py-4">
-                    <img src="{{ asset('assets/img/vector.png') }}" alt="" class="img-fluid me-3">
-                    <p class="card-text">3.62 m³</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-3">
-        <div class="card mb-3">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between align-items-center px-2">
-                    <h5 class="card-title fw-bold mb-0">Acidity Score</h5>
-                    <div class="weather-arrow">
-                        <i class="bi bi-arrow-right"></i>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center align-items-center py-4">
-                    <img src="{{ asset('assets/img/Vector3.png') }}" alt="" class="img-fluid me-3">
-                    <p class="card-text">7.42</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-3">
-        <div class="card mb-3">
-            <div class="card-body text-center pb-2">
-                <div class="d-flex justify-content-between align-items-center px-2">
-                    <h5 class="card-title fw-bold mb-0">Total Credit</h5>
-                    <div class="weather-arrow">
-                        <i class="bi bi-arrow-right"></i>
-                    </div>
-                </div>
-                <div class="d-flex flex-column py-3">
-                    <p class="card-text mb-0">
-                        154,473.00
-                    </p>
-                    <span class="mb-1" style="font-size: 1rem;">
-                        Indonesian Rupiah
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 </div>
 @endsection
 
 @push('js-src')
+<script>
+    $('.weather-arrow').click(function() {
+        // Get the current visible chart and the hidden chart
+        let visibleChart = $('#flow-chart').hasClass('d-none') ? '#total-debit-chart' : '#flow-chart';
+        let hiddenChart = $('#flow-chart').hasClass('d-none') ? '#flow-chart' : '#total-debit-chart';
+
+        // Toggle the visibility
+        $(visibleChart).addClass('d-none');
+        $(hiddenChart).removeClass('d-none');
+    });
+    $('.weather-arrow2').click(function() {
+        // Get the current visible chart and the hidden chart
+        let visibleChart = $('#ph-chart').hasClass('d-none') ? '#total-credit-chart' : '#ph-chart';
+        let hiddenChart = $('#ph-chart').hasClass('d-none') ? '#ph-chart' : '#total-credit-chart';
+
+        // Toggle the visibility
+        $(visibleChart).addClass('d-none');
+        $(hiddenChart).removeClass('d-none');
+    });
+
+    const flowVelocityData = @json($flowVelocityData);
+    const debitVolumeData = @json($debitVolumeData);
+    const acidityScoreData = @json($acidityScoreData);
+    const totalCreditData = @json($totalCreditData);
+    const labels = @json($labels);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const roundedBarChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    display: false, // Hide x-axis labels
+                    grid: {
+                        display: false // Hide x-axis grid lines
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    display: false, // Hide y-axis labels
+                    grid: {
+                        display: false // Hide y-axis grid lines
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: true, // Enable tooltips
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw}`;
+                        }
+                    }
+                }
+            },
+            elements: {
+                bar: {
+                    borderRadius: 10,
+                    backgroundColor: 'rgba(30, 58, 138, 0.8)',
+                    borderSkipped: false // Ensure corners are rounded on all sides
+                }
+            },
+            layout: {
+                padding: 0 // Adjust padding if needed
+            }
+        };
+
+        const roundedBarChartCreditOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    display: false, // Hide x-axis labels
+                    grid: {
+                        display: false // Hide x-axis grid lines
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    display: false, // Hide y-axis labels
+                    grid: {
+                        display: false // Hide y-axis grid lines
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: true, // Enable tooltips
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            return `${context.dataset.label}: Rp ${value.toLocaleString('id-ID')}`;
+                        }
+                    }
+                }
+            },
+            elements: {
+                bar: {
+                    borderRadius: 10,
+                    backgroundColor: 'rgba(138, 30, 30, 0.8)',
+                    borderSkipped: false // Ensure corners are rounded on all sides
+                }
+            },
+            layout: {
+                padding: 0 // Adjust padding if needed
+            }
+        };
+
+        const flowMeterDailyCtx = document.getElementById('flowMeterDaily').getContext('2d');
+        const phDailyCtx = document.getElementById('phDaily').getContext('2d');
+        const totalDebitCtx = document.getElementById('totalDebit').getContext('2d');
+        const totalCreditCtx = document.getElementById('totalCredit').getContext('2d');
+
+        const debitDailyChart = new Chart(totalDebitCtx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Use dynamic labels
+                datasets: [{
+                    label: 'Total Debit',
+                    data: debitVolumeData, // Use dynamic data
+                    backgroundColor: 'rgba(30, 58, 138, 0.8)',
+                    borderRadius: 10
+                }]
+            },
+            options: roundedBarChartOptions
+        });
+
+        const creditDailyChart = new Chart(totalCreditCtx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Use dynamic labels
+                datasets: [{
+                    label: 'Total Debit',
+                    data: totalCreditData, // Use dynamic data
+                    backgroundColor: 'rgba(30, 58, 138, 0.8)',
+                    borderRadius: 10
+                }]
+            },
+            options: roundedBarChartCreditOptions
+        });
+
+        const flowMeterDailyChart = new Chart(flowMeterDailyCtx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Use dynamic labels
+                datasets: [{
+                    label: 'Flow Meter',
+                    data: flowVelocityData, // Use dynamic data
+                    backgroundColor: 'rgba(30, 58, 138, 0.8)',
+                    borderRadius: 10
+                }]
+            },
+            options: roundedBarChartOptions
+        });
+
+        const phDailyChart = new Chart(phDailyCtx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Use dynamic labels
+                datasets: [{
+                    label: 'Ph',
+                    data: acidityScoreData, // Use dynamic data
+                    backgroundColor: 'rgba(30, 58, 138, 0.8)',
+                    borderRadius: 10
+                }]
+            },
+            options: roundedBarChartOptions
+        });
+    });
+</script>
 <script src="{{ asset('assets/js/dashboard.js') }}"></script>
 <!-- Include SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -437,6 +563,5 @@ socket.on('realtimeMonitor', function(data) {
 
 // Initial call to mark all sites off if no data is received immediately after connection
 markAllSitesOff();
-
 </script>
 @endpush

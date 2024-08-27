@@ -21,7 +21,7 @@ app.all('*', function(req, res, next) {
 app.get('/', (req, res) => {
     res.send('Hello, Express!');
 });
-app.get('/restart-gateway', (req, res) => {
+app.post('/restart-gateway', (req, res) => {
     res.send('Success Restart Gateway!');
     process.exit(0);
 });

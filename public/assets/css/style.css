@@ -320,7 +320,8 @@ header {
 }
 
 .chart {
-    height: 4rem;
+    padding: 5px 10px;
+    height: 8rem;
     position: relative;
 }
 
