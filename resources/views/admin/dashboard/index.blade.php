@@ -64,7 +64,7 @@
             </div>
             <div class="card-body network-diagram px-3 pt-5 pb-3" id="site-card">
                 <!-- Image element to change dynamically -->
-                <img src="{{ asset('assets/img/image1.png') }}" width="525" alt="Network Diagram" class="img-fluid d-block mx-auto" id="network-image">
+                <img src="{{ asset('assets/img/image.png') }}" width="525" alt="Network Diagram" class="img-fluid d-block mx-auto" id="network-image">
 
                 <!-- Status Container (unchanged) -->
                 <div class="status-container" id="site-status">
