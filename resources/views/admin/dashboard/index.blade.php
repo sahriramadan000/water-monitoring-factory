@@ -31,15 +31,43 @@
             scrollbar-width: thin; /* Thin scrollbar */
             scrollbar-color: #b0b0b0 #f0f0f0; /* Thumb and track colors */
         }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.7); /* translucent white background */
+            z-index: 999; /* Ensure it's above the content */
+        }
+
+        .d-none {
+            display: none;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
     </style>
 @endpush
 @section('content')
 <div class="row">
     <div class="col-12 col-md-6">
-        <div class="card mb-4">
-            <div class="card-body network-diagram p-5">
-                <img src="{{ asset('assets/img/image.png') }}" width="550" alt="Network Diagram" class="img-fluid d-block mx-auto">
-                <div class="status-container">
+        <div class="card mb-4 position-relative">
+            <div class="loading-overlay d-none" id="loading-spinner">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+            <div class="card-body network-diagram px-3 pt-5 pb-3" id="site-card">
+                <!-- Image element to change dynamically -->
+                <img src="{{ asset('assets/img/image1.png') }}" width="525" alt="Network Diagram" class="img-fluid d-block mx-auto" id="network-image">
+
+                <!-- Status Container (unchanged) -->
+                <div class="status-container" id="site-status">
                     <div class="status-left">
                         <span class="status-badge status-off" id="status-SS1"></span>
                         <span class="status-badge status-off" id="status-SS3"></span>
@@ -48,6 +76,11 @@
                         <span class="status-badge status-off" id="status-SS2"></span>
                         <span class="status-badge status-off" id="status-SS4"></span>
                     </div>
+                </div>
+
+                <div class="navigation-icons d-flex gap-3 mt-3">
+                    <button id="left-arrow" class="btn btn-primary w-100" style="border-radius: 10px !important;" onclick="switchSites('left')">Page 1</button>
+                    <button id="right-arrow" class="btn btn-primary w-100" style="border-radius: 10px !important;" onclick="switchSites('right')">Page 2</button>
                 </div>
             </div>
         </div>
@@ -63,7 +96,7 @@
                         </a>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset('assets/img/logo-syslab.png') }}" alt="Company Logo" width="210" class="company-logo mt-3 pt-4">
+                        <img src="{{ asset('assets/img/logo-systronika.png') }}" alt="Company Logo" width="270" class="company-logo mt-3 pt-4">
                         <h5 class="card-title mt-3">{{ $currentFactory->factory_name }}</h5>
                     </div>
                 </div>
@@ -157,7 +190,7 @@
             <div class="col-12 col-md-6">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card mb-3" id="flow-chart">
+                        <div class="card mb-4" id="flow-chart">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center px-2">
                                     <div class="weather-arrow">
@@ -173,7 +206,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card mb-3 d-none" id="total-debit-chart">
+                        <div class="card mb-4 d-none" id="total-debit-chart">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center px-2">
                                     <div class="weather-arrow">
@@ -191,7 +224,7 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="card" id="ph-chart">
+                        <div class="card mb-4" id="ph-chart">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center px-2">
                                     <div class="weather-arrow2">
@@ -207,7 +240,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card d-none" id="total-credit-chart">
+                        <div class="card mb-4 d-none" id="total-credit-chart">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center px-2">
                                     <div class="weather-arrow2">
@@ -494,74 +527,142 @@
     }
 
     let siteCodesFromDb = @json($getSiteCode);
-let sensorIdentFromDb = @json($getSensorIdent);
-let noDataTimeout;
+    let sensorIdentFromDb = @json($getSensorIdent);
+    let noDataTimeout;
 
-// Function to mark all sites as off
-function markAllSitesOff() {
-    siteCodesFromDb.forEach(function(siteCode) {
-        let elementStatusId = `status-${siteCode}`;
-        $('#' + elementStatusId).removeClass('status-on').addClass('status-off');
+    // Function to mark all sites as off
+    function markAllSitesOff() {
+        siteCodesFromDb.forEach(function(siteCode) {
+            let elementStatusId = `status-${siteCode}`;
+            $('#' + elementStatusId).removeClass('status-on').addClass('status-off');
 
-        sensorIdentFromDb.forEach(sensorIdent => {
-            let elementId = `value-${siteCode}-${sensorIdent}`;
-            let element = document.getElementById(elementId);
+            sensorIdentFromDb.forEach(sensorIdent => {
+                let elementId = `value-${siteCode}-${sensorIdent}`;
+                let element = document.getElementById(elementId);
 
-            if (element) {
-                element.innerText = '-';
-            }
-        });
-    });
-}
-
-// Function to handle received data
-function handleRealtimeData(data) {
-    console.log('Data:', data);
-
-    if (data.factory_code && data.site_code) {
-        // Iterate over each sensor data
-        Object.keys(data.data).forEach(function(sensor) {
-            // Construct the element ID based on site_code and sensor identifier
-            let elementId = `value-${data.site_code}-${sensor}`;
-            let elementStatusId = `status-${data.site_code}`;
-
-            // Check if the element exists in the DOM
-            let element = document.getElementById(elementId);
-            if (element) {
-                let sensorValue = data.data[sensor];
-
-                // Check if the sensor unit is Rupiah ('Rp')
-                if (element.closest('.card-text').innerText.includes('Rp')) {
-                    // Update the element text with the formatted Rupiah value
-                    element.innerText = formatRupiah(sensorValue);
-                } else {
-                    // Update the element text with the raw sensor value
-                    element.innerText = sensorValue;
+                if (element) {
+                    element.innerText = '-';
                 }
-            }
-
-            if (siteCodesFromDb.includes(data.site_code)) {
-                $('#' + elementStatusId).removeClass('status-off').addClass('status-on');
-            }
+            });
         });
     }
-}
 
-// Listen for the realtimeMonitor socket event
-socket.on('realtimeMonitor', function(data) {
-    // Clear the previous timeout as new data is received
-    clearTimeout(noDataTimeout);
+    // Function to handle received data
+    function handleRealtimeData(data) {
+        console.log('Data:', data);
 
-    // Handle the incoming data
-    handleRealtimeData(data);
+        if (data.factory_code && data.site_code) {
+            // Iterate over each sensor data
+            Object.keys(data.data).forEach(function(sensor) {
+                // Construct the element ID based on site_code and sensor identifier
+                let elementId = `value-${data.site_code}-${sensor}`;
+                let elementStatusId = `status-${data.site_code}`;
 
-    // Reset the timeout to mark all sites as off if no new data is received within the interval
-    noDataTimeout = setTimeout(function() {
-        markAllSitesOff();
-    }, 3000); // Adjust the interval as needed
-});
+                // Check if the element exists in the DOM
+                let element = document.getElementById(elementId);
+                if (element) {
+                    let sensorValue = data.data[sensor];
 
-// Initial call to mark all sites off if no data is received immediately after connection
-markAllSitesOff();
+                    // Check if the sensor unit is Rupiah ('Rp')
+                    if (element.closest('.card-text').innerText.includes('Rp')) {
+                        // Update the element text with the formatted Rupiah value
+                        element.innerText = formatRupiah(sensorValue);
+                    } else {
+                        // Update the element text with the raw sensor value
+                        element.innerText = sensorValue;
+                    }
+                }
+
+                if (siteCodesFromDb.includes(data.site_code)) {
+                    $('#' + elementStatusId).removeClass('status-off').addClass('status-on');
+                }
+            });
+        }
+    }
+
+    // Listen for the realtimeMonitor socket event
+    socket.on('realtimeMonitor', function(data) {
+        // Clear the previous timeout as new data is received
+        clearTimeout(noDataTimeout);
+
+        // Handle the incoming data
+        handleRealtimeData(data);
+
+        // Reset the timeout to mark all sites as off if no new data is received within the interval
+        noDataTimeout = setTimeout(function() {
+            markAllSitesOff();
+        }, 3000); // Adjust the interval as needed
+    });
+
+    // Initial call to mark all sites off if no data is received immediately after connection
+    markAllSitesOff();
+
+    // =========================================================================================================
+    let currentSet = 1; // Start with the first set of sites (1-2)
+    const images = {
+        1: "{{ asset('assets/img/image.png') }}",
+        2: "{{ asset('assets/img/image1.png') }}",
+    };
+
+    function showLoading() {
+        const loadingSpinner = document.getElementById('loading-spinner');
+        loadingSpinner.classList.remove('d-none');
+    }
+
+    function hideLoading() {
+        const loadingSpinner = document.getElementById('loading-spinner');
+        loadingSpinner.classList.add('d-none');
+    }
+
+    function switchSites(direction) {
+        showLoading(); // Show loading indicator
+
+        setTimeout(() => {
+            const siteStatus = document.getElementById('site-status');
+            const imageElement = document.getElementById('network-image'); // Get the image element
+
+            if (direction === 'left') {
+                currentSet = Math.max(1, currentSet - 1); // Limit to 1
+            } else if (direction === 'right') {
+                currentSet = Math.min(2, currentSet + 1); // Limit to 2
+            }
+
+            // Change image based on the current set
+            imageElement.src = images[currentSet];
+
+            // Update status badges based on current set
+            if (currentSet === 1) {
+                siteStatus.innerHTML = `
+                    <div class="status-left">
+                        <span class="status-badge status-off" id="status-SS1"></span>
+                        <span class="status-badge status-off" id="status-SS3"></span>
+                    </div>
+                    <div class="status-right">
+                        <span class="status-badge status-off" id="status-SS2"></span>
+                        <span class="status-badge status-off" id="status-SS4"></span>
+                    </div>
+                `;
+            } else if (currentSet === 2) {
+                siteStatus.innerHTML = `
+                    <div class="status-left">
+                        <span class="status-badge status-off" id="status-SS5"></span>
+                        <span class="status-badge status-off" id="status-SS7"></span>
+                    </div>
+                    <div class="status-right">
+                        <span class="status-badge status-off" id="status-SS6"></span>
+                        <span class="status-badge status-off" id="status-SS8"></span>
+                    </div>
+                `;
+            } else if (currentSet === 3) {
+                // Update for set 3
+            } else if (currentSet === 4) {
+                // Update for set 4
+            }
+
+            hideLoading(); // Hide loading indicator after update
+        }, 1000); // Simulate a 1 second loading time
+    }
+
+
 </script>
 @endpush

@@ -22,9 +22,9 @@ client.on('connect', () => {
             factory_code: 'SPP01',
             site_code: 'SS1',
             data: {
-                ph: getRandomFloat(6.5, 8.5),
-                flow: getRandomInt(50, 200),
-                total_debit: getRandomInt(1000, 5000),
+                ph: getRandomFloat(7, 7.4),
+                flow: getRandomInt(4.2, 5.1),
+                total_debit: getRandomInt(0.010, 0.200),
                 total_credit: getRandomInt(15000, 25000),
             }
         };
@@ -32,9 +32,9 @@ client.on('connect', () => {
             factory_code: 'SPP01',
             site_code: 'SS2',
             data: {
-                ph: getRandomFloat(6.5, 8.5),
-                flow: getRandomInt(50, 200),
-                total_debit: getRandomInt(1000, 5000),
+                ph: getRandomFloat(7, 7.4),
+                flow: getRandomInt(4.2, 5.1),
+                total_debit: getRandomInt(0.010, 0.200),
                 total_credit: getRandomInt(15000, 25000),
             }
         };

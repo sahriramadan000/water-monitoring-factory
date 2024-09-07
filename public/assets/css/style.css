@@ -144,7 +144,7 @@ header {
 
 .status-container {
     position: absolute;
-    top: 42%;
+    top: 40.5%;
     left: 50.5%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -157,7 +157,7 @@ header {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 320px;
+    height: 310px;
 }
 
 /* Card Company */
