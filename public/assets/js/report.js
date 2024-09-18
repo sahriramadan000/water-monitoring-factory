@@ -135,7 +135,7 @@ $(document).ready(function() {
                     return 'Sensor Report - ' + siteName + ' ' + dateString + ' ' + timeString;
                 },
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4]  // Adjust according to the columns you want to export
+                    columns: [0, 1, 2, 3, 4, 5]  // Adjust according to the columns you want to export
                 },
                 className: 'd-none'  // Hide the button
             }
